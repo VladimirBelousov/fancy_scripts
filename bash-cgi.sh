@@ -57,7 +57,6 @@
 #   echo -n "Hello_World cookie value == $cookie_value"
 # ----------------------------------------------------------------------------------------
 
-
 [ -t 0 ]&&echo "As it is the server script it can't be invoked in terminal and should be run in the HTTP(S) server's CGI environment"&&exit 1
 
 MAX_CONTENT_LENGTH=3000 # 3 Kb
@@ -65,122 +64,121 @@ MAX_QUERY_STRING_LENGTH=1000 # 1000 symbols
 MAX_HTTP_COOKIE_LENGTH=3000 # 3 Kb
 [ "${CONTENT_LENGTH}"0 -gt ${MAX_CONTENT_LENGTH}0 -o ${#QUERY_STRING} -gt $MAX_QUERY_STRING_LENGTH -o ${#HTTP_COOKIE} -gt $MAX_HTTP_COOKIE_LENGTH ]&&exit 1
 
-
 [ -z $LANG ]&&export LANG=ru_RU.UTF-8 # Set your locale here, so regular expressions will be processed correctly
 DOMAIN_NAME='smsmms.biz' # Is used for links and redirects
 BASENAME="$0";BASENAME="${BASENAME##*/}"
 BASENAME="${BASENAME%.*}.html" # This script's extension was changed to .html, so use .htaccess to map .html with .sh
 
-
 REMOTE_ADDR="${REMOTE_ADDR//[^0-9:A-Fa-f.]/}";REMOTE_ADDR="${rad:0:39}"
 
 declare -A QUERY_STRING_GET
 if [ -n "$QUERY_STRING" ]; then
-    while read -d \&; do
-        OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
-        fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
-        osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
-        [ -z "$fsym$osym" ]&&continue
-        znach="${RPL[1]//+/ }"
-        rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
-        OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
-        col=${#rslt2[*]};ind=1
-        re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
-        re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
-        flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
-        rslt3="";while [[ "$znach" =~ $re ]]; do
-            znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
-            eval znach="$znach"
-            if [ -n "$flg" ]; then
-                rslt3="$znach"
-                flg=""
-            else
-                let i=$col-$ind
-                rslt3="$znach${rslt2[$i]}$rslt3"
-                let ind+=1
-            fi
-            znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
-        done
-        rslt="${rslt2[0]}$rslt3"
-        rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
-        eval 'QUERY_STRING_GET[$fsym$osym]="$rslt"'
-    done <<< "$QUERY_STRING&"
+  while read -d \&; do
+    OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
+    fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
+    osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
+    [ -z "$fsym$osym" ]&&continue
+    znach="${RPL[1]//+/ }"
+    rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
+    OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
+    col=${#rslt2[*]};ind=1
+    re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
+    re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
+    flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
+    rslt3="";while [[ "$znach" =~ $re ]]; do
+      znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
+      eval znach="$znach"
+      if [ -n "$flg" ]; then
+          rslt3="$znach"
+          flg=""
+      else
+          let i=$col-$ind
+          rslt3="$znach${rslt2[$i]}$rslt3"
+          let ind+=1
+      fi
+      znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
+    done
+    rslt="${rslt2[0]}$rslt3"
+    rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
+    eval 'QUERY_STRING_GET[$fsym$osym]="$rslt"'
+  done <<< "$QUERY_STRING&"
 fi
+
 declare -A QUERY_STRING_POST
 if [ -n "$CONTENT_LENGTH" ]; then
-    POST_STRING=`cat`
-    while read -d \&; do
-        OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
-        fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
-        osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
-        [ -z "$fsym$osym" ]&&continue
-        znach="${RPL[1]//+/ }"
-        rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
-        OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
-        col=${#rslt2[*]};ind=1
-        re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
-        re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
-        flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
-        rslt3="";while [[ "$znach" =~ $re ]]; do
-            znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
-            eval znach="$znach"
-            if [ -n "$flg" ]; then
-                rslt3="$znach"
-                flg=""
-            else
-                let i=$col-$ind
-                rslt3="$znach${rslt2[$i]}$rslt3"
-                let ind+=1
-            fi
-            znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
-        done
-        rslt="${rslt2[0]}$rslt3"
-        rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
-        eval 'QUERY_STRING_POST[$fsym$osym]="$rslt"'
-    done <<< "$POST_STRING&"
+  POST_STRING=`cat`
+  while read -d \&; do
+    OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
+    fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
+    osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
+    [ -z "$fsym$osym" ]&&continue
+    znach="${RPL[1]//+/ }"
+    rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
+    OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
+    col=${#rslt2[*]};ind=1
+    re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
+    re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
+    flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
+    rslt3="";while [[ "$znach" =~ $re ]]; do
+      znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
+      eval znach="$znach"
+      if [ -n "$flg" ]; then
+          rslt3="$znach"
+          flg=""
+      else
+          let i=$col-$ind
+          rslt3="$znach${rslt2[$i]}$rslt3"
+          let ind+=1
+      fi
+      znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
+    done
+    rslt="${rslt2[0]}$rslt3"
+    rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
+    eval 'QUERY_STRING_POST[$fsym$osym]="$rslt"'
+  done <<< "$POST_STRING&"
 fi
+
 declare -A HTTP_COOKIES
 if [ -n "$HTTP_COOKIE" ]; then
-    while read -d \ ; do
-        OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
-        fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
-        osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
-        [ -z "$fsym$osym" ]&&continue
-        znach="${znach%;}"
-        znach="${RPL[1]//+/ }"
-        rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
-        OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
-        col=${#rslt2[*]};ind=1
-        re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
-        re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
-        flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
-        rslt3="";while [[ "$znach" =~ $re ]]; do
-            znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
-            eval znach="$znach"
-            if [ -n "$flg" ]; then
-                rslt3="$znach"
-                flg=""
-            else
-                let i=$col-$ind
-                rslt3="$znach${rslt2[$i]}$rslt3"
-                let ind+=1
-            fi
-            znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
-        done
-        rslt="${rslt2[0]}$rslt3"
-        rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
-        eval 'HTTP_COOKIES[$fsym$osym]="$rslt"'
-    done <<< "$HTTP_COOKIE "
+  while read -d \ ; do
+    OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
+    fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
+    osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
+    [ -z "$fsym$osym" ]&&continue
+    znach="${znach%;}"
+    znach="${RPL[1]//+/ }"
+    rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
+    OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
+    col=${#rslt2[*]};ind=1
+    re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
+    re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
+    flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
+    rslt3="";while [[ "$znach" =~ $re ]]; do
+      znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
+      eval znach="$znach"
+      if [ -n "$flg" ]; then
+          rslt3="$znach"
+          flg=""
+      else
+          let i=$col-$ind
+          rslt3="$znach${rslt2[$i]}$rslt3"
+          let ind+=1
+      fi
+      znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
+    done
+    rslt="${rslt2[0]}$rslt3"
+    rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
+    eval 'HTTP_COOKIES[$fsym$osym]="$rslt"'
+  done <<< "$HTTP_COOKIE "
 fi
 
-
 redirect() {
-    echo -e "Location: http://${DOMAIN_NAME}/${BASENAME}\r
+  echo -e "Location: http://${DOMAIN_NAME}/${BASENAME}\r
 \r"
-    exit 0
+  exit 0
 }
 
 http_header_tail() {
-    echo -e "Content-Type: text/html\r
+  echo -e "Content-Type: text/html\r
 \r"
 }
