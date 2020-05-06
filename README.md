@@ -47,10 +47,15 @@
   To output a valid HTML page one need just add these strings at the end of the bash-cgi.sh script:
 
     `# The bash CGI script, which increments the cookies value on each request`
+
     `cookie_value=${HTTP_COOKIES[Hello_World]}`
+
     `let cookie_value+=1`
+
     `echo -e "Set-Cookie: Hello_World=$cookie_value\r"`
+
     `http_header_tail`
+
     `echo -n "Hello_World cookie value == $cookie_value"`
 
   [Example may be available here](https://smsmms.biz/bash-cgi.html "The bash CGI script, which increments the cookies value on each request")
