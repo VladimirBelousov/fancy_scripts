@@ -16,7 +16,7 @@ cat <<7e1e656abd37b5a9c943511659456c4e
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Produces monospace font hyphenation by words
+ Produces hyphenation of monospace text by words
 
 7e1e656abd37b5a9c943511659456c4e
 
