@@ -16,12 +16,15 @@
 
   Demands bash version 4.0 or higher (to define the key and value arrays above).
 
+  All processing is made by bash only (i.e. in an one process) without any external dependencies and additional processes invoking.
+
   It has:
   - the check for max length of data, which can be transferred to it's input,
    as well as processed as query string and cookies;
   - the redirect() procedure to produce redirect to itself with the extension changed to .html (it is useful for an one page's sites);
   - the http_header_tail() procedure to output the last two strings of the HTTP(S) respond's header;
   - the $REMOTE_ADDR value sanitizer from possible injections;
+  - the parser and evaluator of the escaped UTF-8 symbols embedded into the values passed to the $QUERY_STRING_POST and $HTTP_COOKIES
   - the sanitizer of $QUERY_STRING_POST and $HTTP_COOKIES values against possible SQL injections (the escaping like the mysql_real_escape_string php function does, plus the escaping of @ and $).
 
   As it is the server script it can't be invoked in terminal and should be run in the server's CGI environment.

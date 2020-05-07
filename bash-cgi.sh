@@ -20,12 +20,15 @@
 #
 # Demands bash version 4.0 or higher (to define the key and value arrays above).
 #
+# All processing is made by bash only (i.e. in an one process) without any external dependencies and additional processes invoking.
+#
 # It has:
 # - the check for max length of data, which can be transferred to it's input,
 #   as well as processed as query string and cookies;
 # - the redirect() procedure to produce redirect to itself with the extension changed to .html (it is useful for an one page's sites);
 # - the http_header_tail() procedure to output the last two strings of the HTTP(S) respond's header;
 # - the $REMOTE_ADDR value sanitizer from possible injections;
+# - the parser and evaluator of the escaped UTF-8 symbols embedded into the values passed to the $QUERY_STRING_POST and $HTTP_COOKIES
 # - the sanitizer of $QUERY_STRING_POST and $HTTP_COOKIES values against possible SQL injections (the escaping like the mysql_real_escape_string php function does, plus the escaping of @ and $).
 #
 # As it is the server script it can't be invoked in terminal and should be run in the HTTP(S) server's CGI environment.
@@ -89,17 +92,17 @@ if [ -n "$QUERY_STRING" ]; then
       znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
       eval znach="$znach"
       if [ -n "$flg" ]; then
-          rslt3="$znach"
-          flg=""
+        rslt3="$znach"
+        flg=""
       else
-          let i=$col-$ind
-          rslt3="$znach${rslt2[$i]}$rslt3"
-          let ind+=1
+        let i=$col-$ind
+        rslt3="$znach${rslt2[$i]}$rslt3"
+        let ind+=1
       fi
       znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
     done
     rslt="${rslt2[0]}$rslt3"
-    rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
+    rslt="${rslt//\\/\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\\\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
     eval 'QUERY_STRING_GET[$fsym$osym]="$rslt"'
   done <<< "$QUERY_STRING&"
 fi
@@ -123,17 +126,17 @@ if [ -n "$CONTENT_LENGTH" ]; then
       znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
       eval znach="$znach"
       if [ -n "$flg" ]; then
-          rslt3="$znach"
-          flg=""
+        rslt3="$znach"
+        flg=""
       else
-          let i=$col-$ind
-          rslt3="$znach${rslt2[$i]}$rslt3"
-          let ind+=1
+        let i=$col-$ind
+        rslt3="$znach${rslt2[$i]}$rslt3"
+        let ind+=1
       fi
       znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
     done
     rslt="${rslt2[0]}$rslt3"
-    rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
+    rslt="${rslt//\\/\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\\\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
     eval 'QUERY_STRING_POST[$fsym$osym]="$rslt"'
   done <<< "$POST_STRING&"
 fi
@@ -157,17 +160,17 @@ if [ -n "$HTTP_COOKIE" ]; then
       znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
       eval znach="$znach"
       if [ -n "$flg" ]; then
-          rslt3="$znach"
-          flg=""
+        rslt3="$znach"
+        flg=""
       else
-          let i=$col-$ind
-          rslt3="$znach${rslt2[$i]}$rslt3"
-          let ind+=1
+        let i=$col-$ind
+        rslt3="$znach${rslt2[$i]}$rslt3"
+        let ind+=1
       fi
       znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
     done
     rslt="${rslt2[0]}$rslt3"
-    rslt="${rslt//\\/\\\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
+    rslt="${rslt//\\/\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\\\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
     eval 'HTTP_COOKIES[$fsym$osym]="$rslt"'
   done <<< "$HTTP_COOKIE "
 fi
