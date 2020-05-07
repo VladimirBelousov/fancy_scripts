@@ -15,7 +15,8 @@
 # limitations under the License.
 #
 # CGI HTTP(S) server script, which processes :
-# - the query string and post request data (x-www-form-urlencoded) into the $QUERY_STRING_POST key and value array;
+# - the query string into the $QUERY_STRING_GET key and value array;
+# - the post request data (x-www-form-urlencoded) into the $QUERY_STRING_POST key and value array;
 # - the cookies data into the $HTTP_COOKIES key and value array.
 #
 # Demands bash version 4.0 or higher (to define the key and value arrays above).
@@ -28,8 +29,8 @@
 # - the redirect() procedure to produce redirect to itself with the extension changed to .html (it is useful for an one page's sites);
 # - the http_header_tail() procedure to output the last two strings of the HTTP(S) respond's header;
 # - the $REMOTE_ADDR value sanitizer from possible injections;
-# - the parser and evaluator of the escaped UTF-8 symbols embedded into the values passed to the $QUERY_STRING_POST and $HTTP_COOKIES
-# - the sanitizer of $QUERY_STRING_POST and $HTTP_COOKIES values against possible SQL injections (the escaping like the mysql_real_escape_string php function does, plus the escaping of @ and $).
+# - the parser and evaluator of the escaped UTF-8 symbols embedded into the values passed to the $QUERY_STRING_GET, $QUERY_STRING_POST and $HTTP_COOKIES;
+# - the sanitizer of the $QUERY_STRING_GET, $QUERY_STRING_POST and $HTTP_COOKIES values against possible SQL injections (the escaping like the mysql_real_escape_string php function does, plus the escaping of @ and $).
 #
 # As it is the server script it can't be invoked in terminal and should be run in the HTTP(S) server's CGI environment.
 #
