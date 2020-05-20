@@ -48,7 +48,13 @@
     but also removes escapes from the dengerous symbols,
     when is used with parameters, which is not wrapped into the single quotes.
 
-  To output a valid HTML page one need just add these strings at the end of the bash-cgi.sh script:
+  Thus to output a valid HTML page one need just to create such bash script with LF line endings and 0750 permissions:
+
+    `#!/bin/bash`
+
+    `# Import bash-cgi.sh`
+
+    `source ${0%/*}/bash-cgi.sh`
 
     `# The bash CGI script, which increments the cookies value on each request`
 
@@ -62,4 +68,4 @@
 
     `echo -n "Hello_World cookie value == $cookie_value"`
 
-  [Example may be available here](https://smsmms.biz/bash-cgi.html "The bash CGI script, which increments the cookies value on each request")
+  [Example may be available here](https://smsmms.biz/bash-cgi-test.sh "The bash CGI script, which increments the cookies value on each request")
