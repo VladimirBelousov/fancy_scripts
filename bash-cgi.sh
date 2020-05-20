@@ -73,7 +73,7 @@ DOMAIN_NAME='smsmms.biz' # Is used for links and redirects
 BASENAME="$0";BASENAME="${BASENAME##*/}"
 BASENAME="${BASENAME%.*}.html" # This script's extension was changed to .html, so use .htaccess to map .html with .sh
 
-REMOTE_ADDR="${REMOTE_ADDR//[^0-9:A-Fa-f.]/}";REMOTE_ADDR="${rad:0:39}"
+REMOTE_ADDR="${REMOTE_ADDR//[^0-9:A-Fa-f.]/}";REMOTE_ADDR="${REMOTE_ADDR:0:39}"
 
 declare -A QUERY_STRING_GET
 if [ -n "$QUERY_STRING" ]; then
