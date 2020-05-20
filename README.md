@@ -62,10 +62,32 @@
 
     `let cookie_value+=1`
 
-    `echo -e "Set-Cookie: Hello_World=$cookie_value\r"`
+    `echo -e "Set-Cookie: Hello_World=$cookie_value; SameSite=Lax\r"`
 
     `http_header_tail`
 
-    `echo -n "Hello_World cookie value == $cookie_value"`
+    `echo -n "`
+
+    `<!DOCTYPE html>`
+
+    `<html lang='en'>`
+
+    `<head>`
+
+    ` <meta charset='UTF-8'>`
+
+    ` <title>bash-cgi-test.sh Demo</title>`
+
+    `</head>`
+
+    `<body>`
+
+    `  Hello_World cookie value == $cookie_value`
+
+    `</body>`
+
+    `</html>`
+
+    `"`
 
   [Example may be available here](https://smsmms.biz/bash-cgi-test.sh "The bash CGI script, which increments the cookies value on each request")
