@@ -56,7 +56,7 @@
 #   # The bash script, which increments the cookies value on each request
 #   cookie_value=${HTTP_COOKIES[Hello_World]}
 #   let cookie_value+=1
-#   echo -e "Set-Cookie: Hello_World=$cookie_value\r"
+#   echo -e "Set-Cookie: Hello_World=$cookie_value; SameSite=Lax\r"
 #   http_header_tail
 #   echo -n "Hello_World cookie value == $cookie_value"
 # ----------------------------------------------------------------------------------------
