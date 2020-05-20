@@ -48,7 +48,7 @@
     but also removes escapes from the dengerous symbols,
     when is used with parameters, which is not wrapped into the single quotes.
 
-  Thus to output a valid HTML page one need just to create such bash script with LF line endings and 0750 permissions:
+  Thus to output a valid HTML page one need just to create such bash script with LF line endings and 0750 file permission:
 
     `#!/bin/bash`
 
