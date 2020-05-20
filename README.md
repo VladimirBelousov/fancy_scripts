@@ -50,44 +50,44 @@
 
   Thus to output a valid HTML page one need just to create such bash script with LF line endings and 0750 file permission:
 
-    `#!/bin/bash
+    `  #!/bin/bash
 
-     # Import bash-cgi.sh
+       # Import bash-cgi.sh
 
-     source ${0%/*}/bash-cgi.sh
+       source ${0%/*}/bash-cgi.sh
 
-     # The bash CGI script, which increments the cookies value on each request
+       # The bash CGI script, which increments the cookies value on each request
 
-     cookie_value=${HTTP_COOKIES[Hello_World]}
+       cookie_value=${HTTP_COOKIES[Hello_World]}
 
-     let cookie_value+=1
+       let cookie_value+=1
 
-     echo -e "Set-Cookie: Hello_World=$cookie_value; SameSite=Lax\r"
+       echo -e "Set-Cookie: Hello_World=$cookie_value; SameSite=Lax\r"
 
-     http_header_tail
+       http_header_tail
 
-     echo -n "
+       echo -n "
 
-     <!DOCTYPE html>
+       <!DOCTYPE html>
 
-     <html lang='en'>
+       <html lang='en'>
 
-     <head>
+       <head>
 
-     <meta charset='UTF-8'>
+       <meta charset='UTF-8'>
 
-     <title>bash-cgi-test.sh Demo</title>
+       <title>bash-cgi-test.sh Demo</title>
 
-     </head>
+       </head>
 
-     <body>
+       <body>
 
-       Hello_World cookie value == $cookie_value
+         Hello_World cookie value == $cookie_value
 
-     </body>
+       </body>
 
-     </html>
+       </html>
 
-     "`
+       "`
 
   [Example may be available here](https://smsmms.biz/bash-cgi-test.sh "The bash CGI script, which increments the cookies value on each request")
