@@ -149,8 +149,8 @@ if [ -n "$HTTP_COOKIE" ]; then
     fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
     osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
     [ -z "$fsym$osym" ]&&continue
-    znach="${znach%;}"
     znach="${RPL[1]//+/ }"
+    znach="${znach%;}"
     rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
     OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
     col=${#rslt2[*]};ind=1
