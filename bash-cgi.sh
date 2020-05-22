@@ -177,12 +177,10 @@ if [ -n "$HTTP_COOKIE" ]; then
 fi
 
 redirect() {
-  echo -e "Location: http://${DOMAIN_NAME}/${BASENAME}\r
-\r"
+  echo -e "Location: http://${DOMAIN_NAME}/${BASENAME}\r\n\r"
   exit 0
 }
 
 http_header_tail() {
-  echo -e "Content-Type: text/html\r
-\r"
+  echo -e "Content-Type: text/html\r\n\r"
 }
