@@ -16,7 +16,8 @@
 #
 # CGI HTTP(S) server script, which processes :
 # - the query string into the $QUERY_STRING_GET key and value array;
-# - the post request data (x-www-form-urlencoded) into the $QUERY_STRING_POST key and value array;
+# - the post request's data as is into the $POST_STRING;
+# - the post request's data (x-www-form-urlencoded) into the $QUERY_STRING_POST key and value array, but it can be disabled with the assignment QUERY_STRING_POST=false before including this script;
 # - the cookies data into the $HTTP_COOKIES key and value array.
 #
 # Demands bash version 4.0 or higher (to define the key and value arrays above).
@@ -110,36 +111,38 @@ fi
 
 declare -A QUERY_STRING_POST
 if [ -n "$CONTENT_LENGTH" ]; then
-  POST_STRING=`cat`
-  while read -d \&; do
-    OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
-    fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
-    osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
-    [ -z "$fsym$osym" ]&&continue
-    znach="${RPL[1]//+/ }"
-    rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
-    OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
-    col=${#rslt2[*]};ind=1
-    re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
-    re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
-    flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
-    rslt3="";while [[ "$znach" =~ $re ]]; do
-      znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
-      eval znach="$znach"
-      if [ -n "$flg" ]; then
-        rslt3="$znach"
-        flg=""
-      else
-        let i=$col-$ind
-        rslt3="$znach${rslt2[$i]}$rslt3"
-        let ind+=1
-      fi
-      znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
-    done
-    rslt="${rslt2[0]}$rslt3"
-    rslt="${rslt//\\/\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\\\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
-    eval 'QUERY_STRING_POST[$fsym$osym]="$rslt"'
-  done <<< "$POST_STRING&"
+  read -N "$CONTENT_LENGTH" POST_STRING
+  if [ -z "$QUERY_STRING_POST" ]; then
+    while read -d \&; do
+      OIFS=$IFS;IFS="=";RPL=( $REPLY );IFS=$OIFS
+      fsym="${RPL[0]:0:1}";fsym="${fsym/[^_A-Za-z]/_}"
+      osym="${RPL[0]:1}";osym="${osym//[^A-Za-z0-9_]/}"
+      [ -z "$fsym$osym" ]&&continue
+      znach="${RPL[1]//+/ }"
+      rslt="${znach//\%[0-9a-fA-F][0-9a-fA-F]/+}"
+      OIFS=$IFS;IFS="+";rslt2=( $rslt );IFS=$OIFS
+      col=${#rslt2[*]};ind=1
+      re='(^.*)(%[0-9a-fA-F][0-9a-fA-F])(.*$)'
+      re2='.*%[0-9a-fA-F][0-9a-fA-F]$'
+      flg="";[[ "$znach" =~ $re2 ]]&&flg="1"
+      rslt3="";while [[ "$znach" =~ $re ]]; do
+        znach="\$'${BASH_REMATCH[2]/\%/\\x}'"
+        eval znach="$znach"
+        if [ -n "$flg" ]; then
+          rslt3="$znach"
+          flg=""
+        else
+          let i=$col-$ind
+          rslt3="$znach${rslt2[$i]}$rslt3"
+          let ind+=1
+        fi
+        znach="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
+      done
+      rslt="${rslt2[0]}$rslt3"
+      rslt="${rslt//\\/\\\\}";rslt="${rslt//$'\n'/\\$'\n'}";rslt="${rslt//$'\r'/\\$'\r'}";rslt="${rslt//\'/\\\'}";rslt="${rslt//\"/\\\"}";rslt="${rslt//$'\x1a'/\\$'\x1a'}";rslt="${rslt//@/\\@}";rslt="${rslt//$/\\$}"
+      eval 'QUERY_STRING_POST[$fsym$osym]="$rslt"'
+    done <<< "$POST_STRING&"
+  fi
 fi
 
 declare -A HTTP_COOKIES

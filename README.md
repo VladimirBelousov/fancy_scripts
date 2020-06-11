@@ -12,7 +12,8 @@
 
 - **bash-cgi.sh** - CGI (Common Gateway Interface) HTTP(S) server shell script, which processes :
   - the query string into the $QUERY_STRING_GET key and value array;
-  - the post request data (x-www-form-urlencoded) into the $QUERY_STRING_POST key and value array;
+  - the post request's data as is into the $POST_STRING;
+  - the post request's data (x-www-form-urlencoded) into the $QUERY_STRING_POST key and value array, but it can be disabled with the assignment QUERY_STRING_POST=false before including this script;
   - the cookies data into the $HTTP_COOKIES key and value array.
 
   Demands bash version 4.0 or higher (to define the key and value arrays above).
