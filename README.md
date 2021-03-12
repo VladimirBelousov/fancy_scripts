@@ -74,4 +74,4 @@
     "
   ```
 
-  [Example may be available here](https://smsmms.biz/bash-cgi-test.sh "The bash CGI script, which increments the cookies value on each request")
+  [Example may be available here](http://smsmms.biz/bash-cgi-test.sh "The bash CGI script, which increments the cookies value on each request")
