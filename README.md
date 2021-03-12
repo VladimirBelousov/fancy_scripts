@@ -58,7 +58,7 @@
     # The bash CGI script, which increments the cookies value on each request
     cookie_value=${HTTP_COOKIES[Hello_World]}
     let cookie_value+=1
-    echo -e "Set-Cookie: Hello_World=$cookie_value; SameSite=Lax\r"
+    echo -e "Set-Cookie: Hello_World=$cookie_value; SameSite=None; Secure\r"
     http_header_tail
     echo -n "
     <!DOCTYPE html>
@@ -74,4 +74,4 @@
     "
   ```
 
-  [Example may be available here](http://smsmms.biz/bash-cgi-test.sh "The bash CGI script, which increments the cookies value on each request")
+  [Example may be available here](https://smsmms.biz/bash-cgi-test.sh "The bash CGI script, which increments the cookies value on each request")
